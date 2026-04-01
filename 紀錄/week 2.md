@@ -8,4 +8,17 @@
     (3)自己想辦法把沒有api的用手法接上(捏封包之類的)
   我目前是用第一種/第三種方法，用pentestGPT內建就能用的claude cli登入方法，簡單有效，但之後的paper有出現只能用api key，
   甚至openai api key的，就要再另外修改。
-2.
+*比較特別的是 他們將
+2. AutoPenBench
+   這篇論文/github提供工具來進行benchmark，裡面有數個container可以使用做為測試，但大重點是將滲透分成數個步驟/指令來執行並限制模型單純回傳指令，並提供簡單的milestone可以使用。
+   本體的方法是分成instructor跟evaluator，由另一個agent來告訴正在進行挑戰滲透的agent他目前做到做對了什麼，實際上能操作的層面非常廣，主要是提供了一個可以部份給分的架構，這樣在需要訓練或finetone的情況下會好很多(可能可以反饋)
+   *也可以做instructor事後檢討
+   這項工具非常重要:完成率、執行效率、分層評分都在這裡了
+   事實上 也可以試著將pentestGPT接入這個架構中進行評價 目前處理手法之一是有一個http架構來對外做滲透vm的橋口以及evaluate
+   以下是單純claude運作 (6步與8步限制)
+   <img width="500"  alt="image" src="https://github.com/user-attachments/assets/7c0cd198-5060-4d18-bcd6-ee9e2ccc74f4" />
+   <img width="500" alt="image" src="https://github.com/user-attachments/assets/de241655-7ffa-49de-b98a-1cce7829222e" />
+   <img width="500" alt="image" src="https://github.com/user-attachments/assets/1d0dd4b6-e821-497b-a5d3-e6e2afb37b4f" />
+   
+3. Vulnbot
+   
