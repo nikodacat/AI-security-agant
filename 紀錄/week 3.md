@@ -15,8 +15,8 @@
 ，但居家電腦不太需要這個(畢竟不會是公開ip)。<br>
   
   這樣看下來，要做的就是:<br>
-  1.  想辦法使pentestgpt或其他AI pentest可以將Local做為測試目標。<br>
-    如果要用pentestgpt的話，就要額外寫可以做report的部分，現在的常見通用agent跟pentestgpt好像都還無法直接完成整個測試=>實行=>分析=>回報的pipeline，可能是因為複合過多元素。<br>
+  1.  想辦法使pentestgpt或其他AI pentest可以將本家電腦做為測試目標。<br>
+    如果要用pentestgpt的話，就要額外寫可以做report的部分，現在的常見通用agent跟pentestgpt好像都還無法直接完成整個測試=>實行=>分析=>回報的pipeline，可能是因為複合過多元素，但可以通過finetune處理。<br>
   2.  將其他gap analysis的工具接上agent然後透過prompt使他可以做一套完整的流程。<br>
     有現有的工具，只是需要再外接agent，以及各式微調。<br>
 目前傾向兩個可能都要做，因為現在的AI過於強大，有可能兩個都會在短時間內就能得到近實用的結果。<br>
