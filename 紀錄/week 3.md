@@ -1,9 +1,8 @@
 ## 狀況
-  期中考+docker爆炸
   剩下的幾個paper似乎都是跟Autopenbench類似的專題，實際有興趣/有特點的可能會放在VTT-LLM跟企業安全審查的部分。<br>
   看起來並沒有一個paper特別針對類似資安管家的軟體(可能跟掃毒軟體有點重疊?)<br>
   penbench有提到claude opus本身就已經有不低的CTF準確度，所以實際上實操能力應該不用再強化，只要想辦法使得實作能映射到檢測上就好。<br>
-  由於pentestgpt(以及其他的paper)需要docker，現在有點卡到，因此先測試claude直接進行gap analysis的能力，結果還不錯，不過只掃了自己所在的vm以及測試了live service和runtime，
+  測試claude直接進行gap analysis的能力，結果還不錯，不過只掃了自己所在的vm以及測試了live service和runtime，
   可能要另外架構或是想辦法去scan已經安裝的程式來尋找CVE以及潛在漏洞。<br>
   
   claude gap analysis:[Security Gap Analysis Report.docx](https://github.com/user-attachments/files/26768114/Security.Gap.Analysis.Report.docx)
