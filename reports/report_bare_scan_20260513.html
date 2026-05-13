@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HomeSecAI Security Report — 2026-05-14 02:46:03</title>
+  <style>
+    :root {
+      --critical: #dc2626; --high: #ea580c; --medium: #ca8a04;
+      --low: #16a34a; --info: #2563eb;
+      --bg: #0f172a; --surface: #1e293b; --border: #334155;
+      --text: #e2e8f0; --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 2rem; }
+    h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: #7dd3fc; }
+    h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted); }
+    .header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; }
+    .grade-circle {
+      width: 90px; height: 90px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; font-weight: 900; border: 4px solid;
+      flex-shrink: 0;
+    }
+    .grade-A { color: #22c55e; border-color: #22c55e; }
+    .grade-B { color: #84cc16; border-color: #84cc16; }
+    .grade-C { color: #eab308; border-color: #eab308; }
+    .grade-D { color: #f97316; border-color: #f97316; }
+    .grade-F { color: #ef4444; border-color: #ef4444; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .sev-critical { background: var(--critical); color: #fff; }
+    .sev-high     { background: var(--high);     color: #fff; }
+    .sev-medium   { background: var(--medium);   color: #fff; }
+    .sev-low      { background: var(--low);      color: #fff; }
+    .sev-info     { background: var(--info);     color: #fff; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th { background: #0f172a; padding: 0.625rem 0.75rem; text-align: left; color: var(--muted); font-weight: 600; }
+    td { padding: 0.625rem 0.75rem; border-top: 1px solid var(--border); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+    .scanner-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .scanner-card { background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .scanner-score { font-size: 1.75rem; font-weight: 800; }
+    .score-good  { color: #22c55e; }
+    .score-ok    { color: #eab308; }
+    .score-bad   { color: #ef4444; }
+    .sev-counts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1rem 0; }
+    .sev-pill { padding: 4px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: 0.35rem; }
+    .muted { color: var(--muted); font-size: 0.875rem; }
+    .generated { color: var(--muted); font-size: 0.8rem; margin-top: 0.25rem; }
+    @media print { body { background: white; color: black; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="grade-circle grade-D+">D+</div>
+    <div>
+      <h1>Security Report</h1>
+      <div style="font-size:1.1rem; color: #7dd3fc;">Score: 54/100</div>
+      <div class="generated">Generated: 2026-05-14 02:46:03</div>
+    </div>
+  </div>
+
+  <!-- Executive Summary -->
+  <div class="card">
+    <h2>Executive Summary</h2>
+    <p style="margin-bottom:1rem; line-height:1.6;">STONEAI is a gaming PC with solid antivirus and current patches but critically weakened by disabled kernel security features, a zero-length password policy, PostgreSQL exposed on all interfaces, and an unencrypted SSH private key on an unencrypted disk.</p>
+    
+    <p style="margin-bottom:0.75rem; color: #cbd5e1; line-height:1.6;">This is a high-performance gaming and development workstation running Windows 11 (build 26100) with a solid security baseline in some areas: Windows Defender is fully operational with current signatures, patches were applied as recently as May 12 2026, UAC is properly configured with secure desktop prompting, RDP is disabled, and SMB1 is off. These are genuinely good signs.</p>
+    
+    <p style="margin-bottom:0.75rem; color: #cbd5e1; line-height:1.6;">However, the machine carries several critical weaknesses that collectively make it vulnerable to any attacker who gains a foothold. The hardware security layer is nearly absent: Memory Integrity (HVCI) is off, ASLR and CFG are not enforced system-wide, and disk encryption is unconfirmed but likely absent. This is compounded by AMD uProf and ASUS Aura SDK — both installed and running — which have documented kernel-level CVEs. The password policy allowing zero-length passwords, PostgreSQL exposed on all network interfaces, and an unencrypted SSH private key on an unencrypted disk create a scenario where a single point of compromise cascades into full data loss.</p>
+    
+
+    <div class="sev-counts">
+      <div class="sev-pill sev-critical">2 Critical</div>
+      <div class="sev-pill sev-high">9 High</div>
+      <div class="sev-pill sev-medium">17 Medium</div>
+      <div class="sev-pill sev-low">9 Low</div>
+      <div class="sev-pill sev-info">6 Info</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3>Top Risks</h3>
+        <ul><li>HVCI (Memory Integrity) disabled + AMD uProf kernel CVEs = any local process can achieve kernel-level persistence via a malicious driver without triggering Defender</li><li>PostgreSQL 18 bound to 0.0.0.0:5432 with a password policy that allows blank passwords = potential unauthenticated database access from LAN or VPN peers</li><li>Unencrypted SSH private key + no BitLocker = physical access or OS-level compromise gives full SSH identity theft with no passphrase barrier</li></ul>
+      </div>
+      <div>
+        <h3>Quick Wins</h3>
+        <ul><li>net accounts /minpwlen:12 — eliminates blank password risk, takes 5 seconds</li><li>Uninstall WinPcap 4.1.3 — removes EOL kernel driver, Npcap already covers the same functionality</li><li>Set-NetFirewallProfile -Profile Public -DefaultInboundAction Block — explicit firewall hardening</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Priority Actions -->
+  <div class="card">
+    <h2>Priority Actions</h2>
+    <table>
+      <thead><tr><th>Action</th><th>Effort</th><th>Impact</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td>net accounts /minpwlen:12</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Enable Memory Integrity (HVCI) in Windows Security → Device Security</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Set listen_addresses = 'localhost' in postgresql.conf and restart PostgreSQL</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Uninstall WinPcap 4.1.3</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-medium">medium</span></td>
+        </tr>
+        
+        <tr>
+          <td>ssh-keygen -p to add passphrase to id_ed25519</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Set-NetFirewallProfile -Profile Public -DefaultInboundAction Block</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-medium">medium</span></td>
+        </tr>
+        
+        <tr>
+          <td>Enable BitLocker on C: and D:</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Uninstall AMD uProf if not actively used for CPU profiling</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-medium">medium</span></td>
+        </tr>
+        
+        <tr>
+          <td>Disable ASLR/CFG/DEP via Windows Security Exploit protection settings</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Remove one of the three VPN clients (pick one: SoftEther, OpenVPN, or Radmin VPN)</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td><span class="badge sev-low">low</span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Scanner Scores -->
+  <div class="card">
+    <h2>Module Scores</h2>
+    <div class="scanner-grid">
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-bad">45</div>
+        <div style="font-weight:600; text-transform: capitalize;">network</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">6 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">0.0s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-good">75</div>
+        <div style="font-weight:600; text-transform: capitalize;">system</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">4 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">0.0s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-bad">40</div>
+        <div style="font-weight:600; text-transform: capitalize;">users</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">4 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">0.0s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-bad">28</div>
+        <div style="font-weight:600; text-transform: capitalize;">hardware</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">7 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">0.0s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-bad">48</div>
+        <div style="font-weight:600; text-transform: capitalize;">software</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">7 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">0.0s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-ok">55</div>
+        <div style="font-weight:600; text-transform: capitalize;">startup</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">5 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">0.0s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-ok">50</div>
+        <div style="font-weight:600; text-transform: capitalize;">filesystem</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">5 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">0.0s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-ok">62</div>
+        <div style="font-weight:600; text-transform: capitalize;">processes</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">5 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">0.0s</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- All Findings -->
+  <div class="card">
+    <h2>All Findings</h2>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Sev</th><th>Module</th><th>Title</th><th>Description</th><th>Recommendation</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-001</td>
+          <td><span class="badge sev-critical">critical</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">PostgreSQL bound to 0.0.0.0:5432</td>
+          <td class="muted">PostgreSQL 18 listens on all interfaces, not just localhost. Any LAN or VPN peer can attempt direct DB auth.</td>
+          <td style="color:#86efac;">Set listen_addresses = 'localhost' in postgresql.conf and restart.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-001</td>
+          <td><span class="badge sev-critical">critical</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">Minimum password length = 0</td>
+          <td class="muted">Windows will not enforce a minimum password length. Any account including the postgres service account can have a blank password. Blank passwords are accepted by legacy NTLM auth.</td>
+          <td style="color:#86efac;">net accounts /minpwlen:12 immediately.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-002</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">NetBIOS (139) on VPN IP 26.89.137.125</td>
+          <td class="muted">NetBIOS listening on a SoftEther virtual adapter IP exposes Windows name resolution and file-sharing handshakes to VPN peers.</td>
+          <td style="color:#86efac;">Disable NetBIOS over TCP/IP on VPN adapters via adapter properties → IPv4 → Advanced → WINS.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">Memory Integrity (HVCI) disabled</td>
+          <td class="muted">VBS is on but HVCI is off. Unsigned or malicious kernel drivers can load, bypassing Windows code integrity. AMD uProf CVEs are exploitable in this state.</td>
+          <td style="color:#86efac;">Windows Security → Device Security → Core isolation → Memory integrity → ON.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-002</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">ASLR not enforced at system level</td>
+          <td class="muted">ASLR_BottomUp=NOTSET means forced ASLR is not applied system-wide. Unprotected processes are vulnerable to memory layout prediction.</td>
+          <td style="color:#86efac;">Windows Security → Exploit protection → Force randomization for images.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-003</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">CFG (Control Flow Guard) not enforced system-wide</td>
+          <td class="muted">CFG=NOTSET — no system-wide control flow integrity enforcement.</td>
+          <td style="color:#86efac;">Windows Security → Exploit protection → Control flow guard → ON.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-004</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">No confirmed disk encryption</td>
+          <td class="muted">BitLocker status could not be confirmed (access denied). Prior scan confirmed unencrypted drives. Physical access or OS compromise exposes all data.</td>
+          <td style="color:#86efac;">Enable BitLocker on C: and D:.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">AMD uProf 5.2.431 — kernel-level CVEs</td>
+          <td class="muted">AMD uProf has documented CVEs for KASLR bypass and local privilege escalation via its kernel driver. Running with HVCI disabled makes exploitation straightforward.</td>
+          <td style="color:#86efac;">Uninstall if not actively used for CPU profiling. Otherwise update to latest version.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-002</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">WinPcap 4.1.3 — end-of-life kernel driver</td>
+          <td class="muted">WinPcap is EOL with unpatched CVEs and installs npf.sys kernel driver. Npcap 1.83 is already installed and is the modern replacement.</td>
+          <td style="color:#86efac;">Uninstall WinPcap 4.1.3 from Programs & Features.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">SSH private key is unencrypted</td>
+          <td class="muted">id_ed25519 is 399 bytes — consistent with no passphrase. An encrypted key would be >700 bytes. Any attacker with OS access has the key.</td>
+          <td style="color:#86efac;">ssh-keygen -p -f C:\Users\ideal\.ssh\id_ed25519 to add a passphrase.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">PostgreSQL process listening on all interfaces</td>
+          <td class="muted">postgres (PID 10112) actively serving on 0.0.0.0:5432. See NET-001.</td>
+          <td style="color:#86efac;">Restrict to localhost in postgresql.conf.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-003</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">RvControlSvc (Radmin VPN) on 0.0.0.0</td>
+          <td class="muted">Radmin VPN control service listening on all interfaces.</td>
+          <td style="color:#86efac;">Uninstall Radmin VPN if not actively used, or restrict via firewall rule.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-004</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">Firewall DefaultInboundAction: NotConfigured on all profiles</td>
+          <td class="muted">No explicit block-all-inbound policy on Public profile.</td>
+          <td style="color:#86efac;">Set-NetFirewallProfile -Profile Public -DefaultInboundAction Block</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-005</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">ArmouryCrate.UserSessionHelper on 0.0.0.0:12177</td>
+          <td class="muted">ASUS service exposed on all interfaces.</td>
+          <td style="color:#86efac;">Restrict via Windows Firewall or update Armoury Crate.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-002</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">postgres service account is a local user account</td>
+          <td class="muted">The postgres account is an enabled local user. If PostgreSQL is compromised, an attacker has a local Windows account to pivot with.</td>
+          <td style="color:#86efac;">Consider running PostgreSQL as a managed service account (sMSA) instead.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-005</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">DEP in OptIn mode (policy=2)</td>
+          <td class="muted">DEP only protects programs that explicitly opt in, not all processes.</td>
+          <td style="color:#86efac;">Set DEP to OptOut mode: bcdedit /set nx OptOut</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-006</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">Secure Boot status unverifiable</td>
+          <td class="muted">Confirm-SecureBootUEFI returned access denied. Cannot confirm if Secure Boot is enabled.</td>
+          <td style="color:#86efac;">Check in BIOS/UEFI settings or run as Administrator.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-007</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">TPM status unverifiable</td>
+          <td class="muted">Get-Tpm returned all null values — TPM may be absent, disabled, or requires elevation.</td>
+          <td style="color:#86efac;">Check BIOS for TPM settings. TPM 2.0 is required for full Windows security stack.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-003</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">ASUS Aura SDK 3.07.02 — privilege escalation CVEs</td>
+          <td class="muted">Aura SDK has known privilege escalation vulnerabilities. Multiple ASUS services running in background.</td>
+          <td style="color:#86efac;">Update Armoury Crate to latest version via ASUS website.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-004</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">Two Android emulators (BlueStacks + Nox) in startup</td>
+          <td class="muted">Both run full Linux kernels via hypervisor, expose ADB, and have historically had privilege escalation vulnerabilities.</td>
+          <td style="color:#86efac;">Uninstall whichever emulator is not actively used. Remove from startup if used occasionally.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-005</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">Three simultaneous VPN clients</td>
+          <td class="muted">SoftEther VPN, OpenVPN Connect, and Radmin VPN all active creates complex routing and potential traffic leakage.</td>
+          <td style="color:#86efac;">Uninstall or disable VPN clients not actively needed.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STA-001</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">12 HKCU startup entries — large auto-launch footprint</td>
+          <td class="muted">Every entry is a persistent process running with user-level privileges. Each is an attack surface.</td>
+          <td style="color:#86efac;">Audit via Task Manager → Startup Apps. Disable entries not needed 24/7.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STA-002</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">BlueStacks and Nox both auto-launch</td>
+          <td class="muted">Two Android emulator services starting automatically even when not in use.</td>
+          <td style="color:#86efac;">Disable both from startup if not used daily.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-002</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">OpenVPN config file in Downloads</td>
+          <td class="muted">code.ovpn in Downloads may contain embedded certificates or credentials. Downloads is a frequently-accessed, less-protected location.</td>
+          <td style="color:#86efac;">Move to C:\Users\ideal\.openvpn\ and verify no plaintext credentials inside.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-003</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">No confirmed disk encryption</td>
+          <td class="muted">BitLocker status inaccessible without elevation. Prior scan confirmed no encryption on any drive.</td>
+          <td style="color:#86efac;">Enable BitLocker on C: and D:. TPM state must be resolved first (see HW-007).</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-002</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">4 simultaneous OpenVPN Connect instances</td>
+          <td class="muted">Four OpenVPNConnect.exe processes running — may indicate multiple VPN sessions or orphaned processes.</td>
+          <td style="color:#86efac;">Verify all 4 sessions are intentional.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-003</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">7+ ASUS background services running</td>
+          <td class="muted">ArmouryCrate.Service, ArmouryCrateControlInterface, ROGLiveService, AuraWallpaperService, AacAmbientLighting, AsusSoftwareManager all active.</td>
+          <td style="color:#86efac;">Disable ASUS services not actively needed via services.msc.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-004</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">Docker daemon running continuously</td>
+          <td class="muted">com.docker.service running. Docker daemon exposes a management socket.</td>
+          <td style="color:#86efac;">Ensure Docker socket is not world-accessible. Disable if not used daily.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-006</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">Three overlapping VPN stacks active simultaneously</td>
+          <td class="muted">SoftEther, OpenVPN Connect, and Radmin VPN all running creates a complex routing table and risk of traffic leaking.</td>
+          <td style="color:#86efac;">Disable or uninstall VPN clients not actively in use.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SYS-001</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">system</td>
+          <td style="font-weight:600;">AutoPlay policy not configured</td>
+          <td class="muted">NoDriveTypeAutoRun registry value not set — relies on Windows defaults rather than explicit disable.</td>
+          <td style="color:#86efac;">Set HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer NoDriveTypeAutoRun=255</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-003</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">Orphaned disabled account 'ediso'</td>
+          <td class="muted">Disabled account still present on the system.</td>
+          <td style="color:#86efac;">Remove-LocalUser -Name ediso</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-004</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">Password history length = 0</td>
+          <td class="muted">No password history enforced — users can immediately reuse the same password.</td>
+          <td style="color:#86efac;">net accounts /uniquepw:5</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-006</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">Riot Vanguard kernel anticheat at boot</td>
+          <td class="muted">Legitimate but high-privilege kernel driver loaded at every boot regardless of whether you play Valorant.</td>
+          <td style="color:#86efac;">Accept as known trade-off. Ensure Vanguard is always up to date.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STA-003</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">Overwolf auto-launches at login</td>
+          <td class="muted">Gaming overlay with a history of intrusive behavior and occasional security issues.</td>
+          <td style="color:#86efac;">Disable from startup if not actively used.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STA-004</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">Docker Desktop auto-launches at login</td>
+          <td class="muted">Docker daemon running continuously exposes container management surface.</td>
+          <td style="color:#86efac;">Disable auto-launch if Docker is not used daily.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-004</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">JetBrains license key on disk</td>
+          <td class="muted">CLion license key file present. Low risk but worth securing.</td>
+          <td style="color:#86efac;">Ensure clion.key is not world-readable.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-005</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">AMD uProf component (cncmd) active</td>
+          <td class="muted">cncmd is an AMD Radeon / uProf process. See SW-001 for associated CVEs.</td>
+          <td style="color:#86efac;">Uninstall AMD uProf if not used for profiling.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SYS-002</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">system</td>
+          <td style="font-weight:600;">Only 5 hotfixes visible — patch history may be incomplete</td>
+          <td class="muted">GetHotFix shows only 5 entries; most recent is KB5089549 from 2026-05-12 which is current.</td>
+          <td style="color:#86efac;">Verify with Windows Update history in Settings.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SYS-003</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">system</td>
+          <td style="font-weight:600;">UAC well-configured</td>
+          <td class="muted">UAC enabled, admin consent prompt on secure desktop, correct behavior level.</td>
+          <td style="color:#86efac;">No action needed.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SYS-004</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">system</td>
+          <td style="font-weight:600;">Defender fully operational</td>
+          <td class="muted">Real-time protection, NIS, behavior monitor all enabled. Signatures updated 2026-05-13.</td>
+          <td style="color:#86efac;">No action needed.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-007</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">Python 3.13 and 3.14 both installed</td>
+          <td class="muted">Dual Python installations — not a security risk but worth maintaining one to reduce patch surface.</td>
+          <td style="color:#86efac;">Uninstall older Python version if not both actively needed.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STA-005</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">OpenVPN Connect auto-launches</td>
+          <td class="muted">VPN client launching at login — expected if VPN is used regularly.</td>
+          <td style="color:#86efac;">Disable if VPN not used daily.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-005</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">Multiple Python venvs and project directories</td>
+          <td class="muted">Several .venv folders in project directories. Not a direct risk but increases the surface of Python packages to keep updated.</td>
+          <td style="color:#86efac;">Periodically run pip audit in active venvs.</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <div style="text-align:center; margin-top:2rem; color: var(--muted); font-size:0.8rem;">
+    HomeSecAI — Powered by Claude AI · 2026-05-14 02:46:03
+  </div>
+</body>
+</html>

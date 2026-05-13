@@ -1,0 +1,309 @@
+{
+  "meta": {
+    "scan_type": "bare_claude",
+    "description": "Direct PowerShell commands only, no HomeSecAI tooling. Claude analyzed results inline.",
+    "host": "STONEAI",
+    "scan_date": "2026-05-13",
+    "method": "Manual PowerShell queries executed by Claude, findings analyzed in-context"
+  },
+  "scan_results": {
+    "network": {
+      "open_ports": [
+        {"port": 135,   "process": "svchost",                        "address": "0.0.0.0 / ::"},
+        {"port": 139,   "process": "System",                         "address": "192.168.56.1, 192.168.89.4, 26.89.137.125, 192.168.1.112"},
+        {"port": 445,   "process": "System",                         "address": ":: (all)"},
+        {"port": 465,   "process": "vpnclient_x64 (SoftEther)",      "address": "0.0.0.0 / ::"},
+        {"port": 995,   "process": "vpnclient_x64 (SoftEther)",      "address": "0.0.0.0 / ::"},
+        {"port": 1195,  "process": "vpnclient_x64 (SoftEther)",      "address": "0.0.0.0 / ::"},
+        {"port": 1400,  "process": "vpnclient_x64 (SoftEther)",      "address": "0.0.0.0 / ::"},
+        {"port": 5040,  "process": "svchost",                        "address": "0.0.0.0"},
+        {"port": 5432,  "process": "postgres",                       "address": "0.0.0.0 / :: (ALL INTERFACES)"},
+        {"port": 6463,  "process": "Discord",                        "address": "127.0.0.1"},
+        {"port": 6850,  "process": "AacAmbientLighting",             "address": "127.0.0.1"},
+        {"port": 7778,  "process": "ArmouryCrateControlInterface",   "address": "127.0.0.1"},
+        {"port": 9008,  "process": "vpnclient_x64 (SoftEther)",      "address": "0.0.0.0 / ::"},
+        {"port": 9930,  "process": "vpnclient_x64 (SoftEther)",      "address": "127.0.0.1"},
+        {"port": 11001, "process": "AuraWallpaperService",           "address": "127.0.0.1"},
+        {"port": 12177, "process": "ArmouryCrate.UserSessionHelper", "address": "0.0.0.0"},
+        {"port": 13030, "process": "ROGLiveService",                 "address": "127.0.0.1"},
+        {"port": 13031, "process": "ArmouryCrate.Service",           "address": "127.0.0.1"},
+        {"port": 22112, "process": "ROGLiveService",                 "address": "127.0.0.1"},
+        {"port": 24830, "process": "AsusSoftwareManager",           "address": "127.0.0.1"},
+        {"port": 27036, "process": "steam",                          "address": "0.0.0.0"},
+        {"port": 27060, "process": "steam",                          "address": "127.0.0.1"},
+        {"port": 42050, "process": "OneDrive.Sync.Service",          "address": "::1"},
+        {"port": 49152, "process": "OverwolfBrowser",                "address": "127.0.0.1"},
+        {"port": 49664, "process": "lsass",                          "address": "0.0.0.0 / ::"},
+        {"port": 49679, "process": "RvControlSvc (Radmin VPN)",      "address": "192.168.1.112"},
+        {"port": 50100, "process": "ArmouryCrate.Service",           "address": "127.0.0.1"},
+        {"port": 52368, "process": "NVIDIA Web Helper",              "address": "127.0.0.1"},
+        {"port": 55803, "process": "vpnclient_x64 (SoftEther)",      "address": "0.0.0.0 / ::"},
+        {"port": 57894, "process": "RvControlSvc (Radmin VPN)",      "address": "0.0.0.0 / ::"},
+        {"port": 57895, "process": "RvControlSvc (Radmin VPN)",      "address": "0.0.0.0 / ::"},
+        {"port": 58433, "process": "RiotClientServices",             "address": "127.0.0.1"},
+        {"port": 61847, "process": "Riot Client",                    "address": ":: (all)"},
+        {"port": 63342, "process": "pycharm64",                      "address": "127.0.0.1 / ::"},
+        {"port": 65001, "process": "nvcontainer (NVIDIA)",           "address": "127.0.0.1"}
+      ],
+      "firewall": {
+        "Domain":  {"Enabled": true, "DefaultInboundAction": "NotConfigured", "DefaultOutboundAction": "NotConfigured"},
+        "Private": {"Enabled": true, "DefaultInboundAction": "NotConfigured", "DefaultOutboundAction": "NotConfigured"},
+        "Public":  {"Enabled": true, "DefaultInboundAction": "NotConfigured", "DefaultOutboundAction": "NotConfigured"}
+      },
+      "smb": {
+        "EnableSMB1Protocol": false,
+        "EnableSMB2Protocol": true,
+        "RequireSecuritySignature": true
+      },
+      "shares": [
+        {"name": "ADMIN$", "path": "C:\\Windows", "note": "Remote admin share"},
+        {"name": "C$",     "path": "C:\\",         "note": "Default admin share"},
+        {"name": "D$",     "path": "D:\\",         "note": "Default admin share"},
+        {"name": "IPC$",   "path": "",             "note": "Remote IPC"}
+      ],
+      "postgres_on_all_interfaces": true,
+      "netbios_on_vpn_ip": "26.89.137.125"
+    },
+    "system": {
+      "os": {
+        "WindowsProductName": "Windows 10 Pro",
+        "WindowsVersion": "2009",
+        "OsArchitecture": "64-bit",
+        "WindowsBuildLabEx": "26100.1.amd64fre.ge_release.240331-1435"
+      },
+      "hotfixes": [
+        {"HotFixID": "KB5089549", "InstalledOn": "2026-05-12", "Description": "Security Update"},
+        {"HotFixID": "KB5092762", "InstalledOn": "2026-05-12", "Description": "Security Update"},
+        {"HotFixID": "KB5087051", "InstalledOn": "2026-05-12", "Description": "Update"},
+        {"HotFixID": "KB5088467", "InstalledOn": "2026-04-14", "Description": "Security Update"},
+        {"HotFixID": "KB5054156", "InstalledOn": "2026-03-07", "Description": "Update"}
+      ],
+      "uac": {
+        "EnableLUA": 1,
+        "ConsentPromptBehaviorAdmin": 5,
+        "PromptOnSecureDesktop": 1
+      },
+      "defender": {
+        "AntivirusEnabled": true,
+        "RealTimeProtectionEnabled": true,
+        "AntivirusSignatureLastUpdated": "2026-05-13",
+        "NISEnabled": true,
+        "BehaviorMonitorEnabled": true
+      },
+      "rdp": {
+        "RDPEnabled": false,
+        "NLARequired": 1
+      },
+      "windows_update_policy": "No restrictive policy found (using defaults)",
+      "smb1_disabled": true,
+      "autoplay_policy": "NotConfigured"
+    },
+    "users": {
+      "local_users": [
+        {"Name": "Administrator",      "Enabled": false, "PasswordRequired": true,  "PasswordNeverExpires": false},
+        {"Name": "DefaultAccount",     "Enabled": false, "PasswordRequired": false, "PasswordNeverExpires": false},
+        {"Name": "ediso",              "Enabled": false, "PasswordRequired": true,  "PasswordNeverExpires": false, "note": "Orphaned disabled account"},
+        {"Name": "Guest",              "Enabled": false, "PasswordRequired": false, "PasswordNeverExpires": false},
+        {"Name": "niko",               "Enabled": true,  "PasswordRequired": true,  "PasswordNeverExpires": false, "LastLogon": "2026-05-13"},
+        {"Name": "postgres",           "Enabled": true,  "PasswordRequired": true,  "PasswordNeverExpires": false, "note": "Service account for PostgreSQL"},
+        {"Name": "WDAGUtilityAccount", "Enabled": false, "PasswordRequired": true,  "PasswordNeverExpires": false},
+        {"Name": "WsiAccount",         "Enabled": false, "PasswordRequired": false, "PasswordNeverExpires": false}
+      ],
+      "administrators_group": ["STONEAI\\Administrator", "STONEAI\\niko"],
+      "password_policy": {
+        "MinimumPasswordLength": 0,
+        "MaximumPasswordAge_days": 42,
+        "MinimumPasswordAge_days": 0,
+        "PasswordHistoryLength": 0,
+        "LockoutThreshold": 10,
+        "LockoutDuration_minutes": 10,
+        "LockoutObservationWindow_minutes": 10
+      }
+    },
+    "hardware": {
+      "secure_boot": "Access denied — could not confirm",
+      "tpm": {
+        "TpmPresent": null,
+        "TpmReady": null,
+        "TpmEnabled": null,
+        "TpmActivated": null,
+        "note": "All fields null — TPM absent or inaccessible without elevation"
+      },
+      "bitlocker": "Access denied — could not confirm (no elevation)",
+      "vbs": {
+        "EnableVirtualizationBasedSecurity": 1,
+        "HVCIEnabled": 0,
+        "CredentialGuard_LsaCfgFlags": null
+      },
+      "exploit_mitigations": {
+        "ASLR_BottomUp": "NOTSET",
+        "ASLR_ForceRelocate": null,
+        "CFG": "NOTSET",
+        "DEP_Policy": 2
+      }
+    },
+    "software": {
+      "security_relevant": [
+        {"name": "AMD uProf",                      "version": "5.2.431",           "publisher": "Advanced Micro Devices, Inc.", "cve_note": "Known kernel-level CVEs: KASLR bypass, privilege escalation"},
+        {"name": "ASUS Aura SDK",                  "version": "3.07.02",           "publisher": "ASUSTeK COMPUTER INC.",        "cve_note": "Known privilege escalation CVEs"},
+        {"name": "ASUS Framework Service",         "version": "4.2.4.12",          "publisher": "ASUSTeK Computer Inc."},
+        {"name": "ASUS Update Helper",             "version": "1.3.107.155",       "publisher": "ASUSTeK Computer Inc."},
+        {"name": "WinPcap",                        "version": "4.1.3",             "publisher": "Riverbed Technology, Inc.",    "cve_note": "End-of-life, known unpatched CVEs, kernel driver npf.sys"},
+        {"name": "Npcap",                          "version": "1.83",              "publisher": "Nmap Project",                 "note": "Replacement for WinPcap — both installed simultaneously"},
+        {"name": "Wireshark",                      "version": "4.6.2",             "publisher": "Wireshark developer community"},
+        {"name": "SoftEther VPN Client",           "version": "4.44.9807",         "publisher": "SoftEther VPN Project"},
+        {"name": "OpenVPN Connect",                "version": "3.6.0",             "publisher": "OpenVPN Inc."},
+        {"name": "Radmin VPN",                     "version": "2.0.9",             "publisher": "Famatech"},
+        {"name": "Docker Desktop",                 "version": "4.70.0",            "publisher": "Docker Inc."},
+        {"name": "BlueStacks",                     "version": "5.22.102.1002",     "publisher": "now.gg, Inc."},
+        {"name": "Riot Vanguard",                  "version": "unknown",           "publisher": "Riot Games, Inc.",             "note": "Kernel anticheat driver, loads at boot"},
+        {"name": "PostgreSQL 18",                  "version": "18.2-1",            "publisher": "PostgreSQL Global Development Group"},
+        {"name": "NVIDIA GeForce Experience",      "version": "3.28.0.412",        "publisher": "NVIDIA Corporation"},
+        {"name": "Git",                            "version": "2.51.0",            "publisher": "The Git Development Community"},
+        {"name": "Node.js",                        "version": "24.13.0",           "publisher": "Node.js Foundation"},
+        {"name": "Python 3.13.5",                  "version": "3.13.5150.0",       "publisher": "Python Software Foundation"},
+        {"name": "Python 3.14.3",                  "version": "3.14.3150.0",       "publisher": "Python Software Foundation"},
+        {"name": "Overwolf",                       "version": "0.296.3.3",         "publisher": "Overwolf Ltd."}
+      ]
+    },
+    "startup": {
+      "hklm_run": [
+        {"name": "SecurityHealth",                "path": "C:\\Windows\\system32\\SecurityHealthSystray.exe"},
+        {"name": "Virtual Pet",                   "path": "C:\\Program Files\\ASUS\\Virtual Pet\\Virtual Pet.exe /startup"},
+        {"name": "Riot Vanguard",                 "path": "C:\\Program Files\\Riot Vanguard\\vgtray.exe"},
+        {"name": "SoftEther VPN Client UI Helper","path": "C:\\Program Files\\SoftEther VPN Client\\vpnclient_x64.exe /uihelp"}
+      ],
+      "hkcu_run": [
+        {"name": "OneDrive",              "path": "OneDrive.exe /background"},
+        {"name": "Steam",                 "path": "steam.exe -silent"},
+        {"name": "Overwolf",              "path": "OverwolfLauncher.exe -overwolfsilent"},
+        {"name": "Discord",               "path": "Update.exe --processStart Discord.exe"},
+        {"name": "OpenVPN Connect",       "path": "OpenVPNConnect.exe --opened-at-login --minimize"},
+        {"name": "RiotClient",            "path": "RiotClientServices.exe --launch-background-mode"},
+        {"name": "Opera GX",              "path": "opera.exe --autostart"},
+        {"name": "NoxMultiPlayer",        "path": "D:\\Program Files\\Nox\\bin\\MultiPlayerManager.exe -startSource:auto_start"},
+        {"name": "BlueStacks Services",   "path": "BlueStacksServices.exe --hidden"},
+        {"name": "EpicGamesLauncher",     "path": "EpicGamesLauncher.exe -silent -launchcontext=boot"},
+        {"name": "Docker Desktop",        "path": "Docker Desktop.exe"},
+        {"name": "Microsoft Edge",        "path": "msedge.exe --no-startup-window --win-session-start"}
+      ]
+    },
+    "filesystem": {
+      "ssh_keys": [
+        {"path": "C:\\Users\\ideal\\.ssh\\id_ed25519",     "size_bytes": 399,  "note": "UNENCRYPTED private key (encrypted keys are >700 bytes)"},
+        {"path": "C:\\Users\\ideal\\.ssh\\id_ed25519.pub", "size_bytes": 95},
+        {"path": "C:\\Users\\ideal\\.ssh\\known_hosts",    "size_bytes": 2980}
+      ],
+      "sensitive_files": [
+        {"path": "C:\\Users\\ideal\\Downloads\\code.ovpn",                                          "type": "OpenVPN config — may contain embedded credentials"},
+        {"path": "C:\\Users\\ideal\\AppData\\Roaming\\JetBrains\\CLion2025.2\\clion.key",           "type": "JetBrains license key"},
+        {"path": "C:\\Users\\ideal\\AppData\\Roaming\\MobaXterm\\slash\\mx86_64b\\etc\\...",        "type": "MobaXterm config files"}
+      ],
+      "bitlocker_status": "Could not verify (access denied without elevation) — assumed unencrypted based on prior scan",
+      "temp_executables": "Not checked in this scan pass"
+    },
+    "processes": {
+      "notable": [
+        {"name": "postgres",          "note": "PostgreSQL — listening on all interfaces"},
+        {"name": "OpenVPNConnect",    "note": "4 instances running"},
+        {"name": "vpnclient_x64",     "note": "SoftEther VPN — multiple ports open"},
+        {"name": "cncmd",             "note": "AMD Radeon / uProf component"},
+        {"name": "com.docker.service","note": "Docker daemon"},
+        {"name": "ArmouryCrate.*",    "note": "7+ ASUS background services"},
+        {"name": "RiotClient/Vanguard","note": "Kernel anticheat driver active"}
+      ]
+    }
+  },
+  "analyses": {
+    "network":    {"score": 45, "summary": "PostgreSQL exposed on all interfaces, NetBIOS on VPN IP, firewall inbound not explicitly blocked on Public profile.", "findings": [
+      {"id": "NET-001", "severity": "critical", "title": "PostgreSQL bound to 0.0.0.0:5432", "description": "PostgreSQL 18 listens on all interfaces, not just localhost. Any LAN or VPN peer can attempt direct DB auth.", "recommendation": "Set listen_addresses = 'localhost' in postgresql.conf and restart.", "evidence": "TCP 0.0.0.0:5432 LISTEN PID 10112 (postgres)"},
+      {"id": "NET-002", "severity": "high",     "title": "NetBIOS (139) on VPN IP 26.89.137.125", "description": "NetBIOS listening on a SoftEther virtual adapter IP exposes Windows name resolution and file-sharing handshakes to VPN peers.", "recommendation": "Disable NetBIOS over TCP/IP on VPN adapters via adapter properties → IPv4 → Advanced → WINS.", "evidence": "Port 139 bound to 26.89.137.125 (System)"},
+      {"id": "NET-003", "severity": "medium",   "title": "RvControlSvc (Radmin VPN) on 0.0.0.0", "description": "Radmin VPN control service listening on all interfaces.", "recommendation": "Uninstall Radmin VPN if not actively used, or restrict via firewall rule.", "evidence": "Port 57894/57895 bound to 0.0.0.0 / :: (RvControlSvc)"},
+      {"id": "NET-004", "severity": "medium",   "title": "Firewall DefaultInboundAction: NotConfigured on all profiles", "description": "No explicit block-all-inbound policy on Public profile.", "recommendation": "Set-NetFirewallProfile -Profile Public -DefaultInboundAction Block", "evidence": "All 3 profiles show DefaultInboundAction=NotConfigured"},
+      {"id": "NET-005", "severity": "medium",   "title": "ArmouryCrate.UserSessionHelper on 0.0.0.0:12177", "description": "ASUS service exposed on all interfaces.", "recommendation": "Restrict via Windows Firewall or update Armoury Crate.", "evidence": "Port 12177 bound to 0.0.0.0 (ArmouryCrate.UserSessionHelper)"},
+      {"id": "NET-006", "severity": "low",      "title": "Three overlapping VPN stacks active simultaneously", "description": "SoftEther, OpenVPN Connect, and Radmin VPN all running creates a complex routing table and risk of traffic leaking.", "recommendation": "Disable or uninstall VPN clients not actively in use.", "evidence": "vpnclient_x64 (SoftEther), OpenVPNConnect (4 instances), RvControlSvc (Radmin VPN) all running"}
+    ]},
+    "system":     {"score": 75, "summary": "Strong baseline: Defender current, UAC properly configured, RDP disabled, SMB1 off, patches applied this week. AutoPlay policy not set.", "findings": [
+      {"id": "SYS-001", "severity": "low",  "title": "AutoPlay policy not configured", "description": "NoDriveTypeAutoRun registry value not set — relies on Windows defaults rather than explicit disable.", "recommendation": "Set HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer NoDriveTypeAutoRun=255", "evidence": "NoDriveTypeAutoRun = null"},
+      {"id": "SYS-002", "severity": "info", "title": "Only 5 hotfixes visible — patch history may be incomplete", "description": "GetHotFix shows only 5 entries; most recent is KB5089549 from 2026-05-12 which is current.", "recommendation": "Verify with Windows Update history in Settings.", "evidence": "5 patches returned by Get-HotFix"},
+      {"id": "SYS-003", "severity": "info", "title": "UAC well-configured", "description": "UAC enabled, admin consent prompt on secure desktop, correct behavior level.", "recommendation": "No action needed.", "evidence": "EnableLUA=1, ConsentPromptAdmin=5, PromptSecureDesktop=1"},
+      {"id": "SYS-004", "severity": "info", "title": "Defender fully operational", "description": "Real-time protection, NIS, behavior monitor all enabled. Signatures updated 2026-05-13.", "recommendation": "No action needed.", "evidence": "All Defender booleans true, signatures current"}
+    ]},
+    "users":      {"score": 40, "summary": "Critical password policy flaw (zero minimum length), plus enabled postgres service account and orphaned disabled user.", "findings": [
+      {"id": "USR-001", "severity": "critical", "title": "Minimum password length = 0", "description": "Windows will not enforce a minimum password length. Any account including the postgres service account can have a blank password. Blank passwords are accepted by legacy NTLM auth.", "recommendation": "net accounts /minpwlen:12 immediately.", "evidence": "net accounts: Minimum password length: 0"},
+      {"id": "USR-002", "severity": "medium",   "title": "postgres service account is a local user account", "description": "The postgres account is an enabled local user. If PostgreSQL is compromised, an attacker has a local Windows account to pivot with.", "recommendation": "Consider running PostgreSQL as a managed service account (sMSA) instead.", "evidence": "postgres account: Enabled=True, PasswordRequired=True"},
+      {"id": "USR-003", "severity": "low",      "title": "Orphaned disabled account 'ediso'", "description": "Disabled account still present on the system.", "recommendation": "Remove-LocalUser -Name ediso", "evidence": "ediso: Enabled=False"},
+      {"id": "USR-004", "severity": "low",      "title": "Password history length = 0", "description": "No password history enforced — users can immediately reuse the same password.", "recommendation": "net accounts /uniquepw:5", "evidence": "Length of password history maintained: None"}
+    ]},
+    "hardware":   {"score": 28, "summary": "VBS enabled but HVCI (Memory Integrity) disabled. ASLR and CFG not enforced. Secure Boot and TPM status unverifiable without elevation. No confirmed disk encryption.", "findings": [
+      {"id": "HW-001", "severity": "high",   "title": "Memory Integrity (HVCI) disabled", "description": "VBS is on but HVCI is off. Unsigned or malicious kernel drivers can load, bypassing Windows code integrity. AMD uProf CVEs are exploitable in this state.", "recommendation": "Windows Security → Device Security → Core isolation → Memory integrity → ON.", "evidence": "HVCIEnabled=0, EnableVirtualizationBasedSecurity=1"},
+      {"id": "HW-002", "severity": "high",   "title": "ASLR not enforced at system level", "description": "ASLR_BottomUp=NOTSET means forced ASLR is not applied system-wide. Unprotected processes are vulnerable to memory layout prediction.", "recommendation": "Windows Security → Exploit protection → Force randomization for images.", "evidence": "ASLR_BottomUp=NOTSET, ASLR_ForceRelocate=null"},
+      {"id": "HW-003", "severity": "high",   "title": "CFG (Control Flow Guard) not enforced system-wide", "description": "CFG=NOTSET — no system-wide control flow integrity enforcement.", "recommendation": "Windows Security → Exploit protection → Control flow guard → ON.", "evidence": "CFG=NOTSET"},
+      {"id": "HW-004", "severity": "high",   "title": "No confirmed disk encryption", "description": "BitLocker status could not be confirmed (access denied). Prior scan confirmed unencrypted drives. Physical access or OS compromise exposes all data.", "recommendation": "Enable BitLocker on C: and D:.", "evidence": "BitLocker query: access denied; prior scan showed ProtectionStatus=Off"},
+      {"id": "HW-005", "severity": "medium", "title": "DEP in OptIn mode (policy=2)", "description": "DEP only protects programs that explicitly opt in, not all processes.", "recommendation": "Set DEP to OptOut mode: bcdedit /set nx OptOut", "evidence": "DataExecutionPrevention_SupportPolicy=2"},
+      {"id": "HW-006", "severity": "medium", "title": "Secure Boot status unverifiable", "description": "Confirm-SecureBootUEFI returned access denied. Cannot confirm if Secure Boot is enabled.", "recommendation": "Check in BIOS/UEFI settings or run as Administrator.", "evidence": "Confirm-SecureBootUEFI: Access was denied"},
+      {"id": "HW-007", "severity": "medium", "title": "TPM status unverifiable", "description": "Get-Tpm returned all null values — TPM may be absent, disabled, or requires elevation.", "recommendation": "Check BIOS for TPM settings. TPM 2.0 is required for full Windows security stack.", "evidence": "All Get-Tpm fields null"}
+    ]},
+    "software":   {"score": 48, "summary": "AMD uProf and ASUS Aura SDK have known kernel CVEs. WinPcap 4.1.3 is EOL with active vulnerabilities. Three VPN clients and two Android emulators expand attack surface significantly.", "findings": [
+      {"id": "SW-001", "severity": "high",   "title": "AMD uProf 5.2.431 — kernel-level CVEs", "description": "AMD uProf has documented CVEs for KASLR bypass and local privilege escalation via its kernel driver. Running with HVCI disabled makes exploitation straightforward.", "recommendation": "Uninstall if not actively used for CPU profiling. Otherwise update to latest version.", "evidence": "AMD uProf 5.2.431 installed, cncmd process running"},
+      {"id": "SW-002", "severity": "high",   "title": "WinPcap 4.1.3 — end-of-life kernel driver", "description": "WinPcap is EOL with unpatched CVEs and installs npf.sys kernel driver. Npcap 1.83 is already installed and is the modern replacement.", "recommendation": "Uninstall WinPcap 4.1.3 from Programs & Features.", "evidence": "WinPcap 4.1.3 and Npcap 1.83 both installed simultaneously"},
+      {"id": "SW-003", "severity": "medium", "title": "ASUS Aura SDK 3.07.02 — privilege escalation CVEs", "description": "Aura SDK has known privilege escalation vulnerabilities. Multiple ASUS services running in background.", "recommendation": "Update Armoury Crate to latest version via ASUS website.", "evidence": "ASUS Aura SDK 3.07.02, 7+ ASUS background services active"},
+      {"id": "SW-004", "severity": "medium", "title": "Two Android emulators (BlueStacks + Nox) in startup", "description": "Both run full Linux kernels via hypervisor, expose ADB, and have historically had privilege escalation vulnerabilities.", "recommendation": "Uninstall whichever emulator is not actively used. Remove from startup if used occasionally.", "evidence": "BlueStacks 5.22.102.1002 and NoxMultiPlayer in HKCU Run keys"},
+      {"id": "SW-005", "severity": "medium", "title": "Three simultaneous VPN clients", "description": "SoftEther VPN, OpenVPN Connect, and Radmin VPN all active creates complex routing and potential traffic leakage.", "recommendation": "Uninstall or disable VPN clients not actively needed.", "evidence": "vpnclient_x64, OpenVPNConnect, RvControlSvc all running"},
+      {"id": "SW-006", "severity": "low",    "title": "Riot Vanguard kernel anticheat at boot", "description": "Legitimate but high-privilege kernel driver loaded at every boot regardless of whether you play Valorant.", "recommendation": "Accept as known trade-off. Ensure Vanguard is always up to date.", "evidence": "Riot Vanguard in HKLM Run, vgtray.exe running"},
+      {"id": "SW-007", "severity": "info",   "title": "Python 3.13 and 3.14 both installed", "description": "Dual Python installations — not a security risk but worth maintaining one to reduce patch surface.", "recommendation": "Uninstall older Python version if not both actively needed.", "evidence": "Python 3.13.5 and 3.14.3 both in registry"}
+    ]},
+    "startup":    {"score": 55, "summary": "12 HKCU auto-launch entries. No clearly malicious entries, but a large footprint of gaming/overlay/emulator software running continuously.", "findings": [
+      {"id": "STA-001", "severity": "medium", "title": "12 HKCU startup entries — large auto-launch footprint", "description": "Every entry is a persistent process running with user-level privileges. Each is an attack surface.", "recommendation": "Audit via Task Manager → Startup Apps. Disable entries not needed 24/7.", "evidence": "12 entries in HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"},
+      {"id": "STA-002", "severity": "medium", "title": "BlueStacks and Nox both auto-launch", "description": "Two Android emulator services starting automatically even when not in use.", "recommendation": "Disable both from startup if not used daily.", "evidence": "BlueStacksServices.exe and MultiPlayerManager.exe in HKCU Run"},
+      {"id": "STA-003", "severity": "low",    "title": "Overwolf auto-launches at login", "description": "Gaming overlay with a history of intrusive behavior and occasional security issues.", "recommendation": "Disable from startup if not actively used.", "evidence": "OverwolfLauncher.exe in HKCU Run"},
+      {"id": "STA-004", "severity": "low",    "title": "Docker Desktop auto-launches at login", "description": "Docker daemon running continuously exposes container management surface.", "recommendation": "Disable auto-launch if Docker is not used daily.", "evidence": "Docker Desktop.exe in HKCU Run"},
+      {"id": "STA-005", "severity": "info",   "title": "OpenVPN Connect auto-launches", "description": "VPN client launching at login — expected if VPN is used regularly.", "recommendation": "Disable if VPN not used daily.", "evidence": "OpenVPNConnect.exe in HKCU Run"}
+    ]},
+    "filesystem": {"score": 50, "summary": "Unencrypted SSH private key on disk. OpenVPN config in Downloads. No confirmed disk encryption. Sensitive files accessible without passphrase protection.", "findings": [
+      {"id": "FS-001", "severity": "high",   "title": "SSH private key is unencrypted", "description": "id_ed25519 is 399 bytes — consistent with no passphrase. An encrypted key would be >700 bytes. Any attacker with OS access has the key.", "recommendation": "ssh-keygen -p -f C:\\Users\\ideal\\.ssh\\id_ed25519 to add a passphrase.", "evidence": "C:\\Users\\ideal\\.ssh\\id_ed25519: 399 bytes"},
+      {"id": "FS-002", "severity": "medium", "title": "OpenVPN config file in Downloads", "description": "code.ovpn in Downloads may contain embedded certificates or credentials. Downloads is a frequently-accessed, less-protected location.", "recommendation": "Move to C:\\Users\\ideal\\.openvpn\\ and verify no plaintext credentials inside.", "evidence": "C:\\Users\\ideal\\Downloads\\code.ovpn: 2042 bytes"},
+      {"id": "FS-003", "severity": "medium", "title": "No confirmed disk encryption", "description": "BitLocker status inaccessible without elevation. Prior scan confirmed no encryption on any drive.", "recommendation": "Enable BitLocker on C: and D:. TPM state must be resolved first (see HW-007).", "evidence": "BitLocker query returned access denied; previous scan: ProtectionStatus=Off"},
+      {"id": "FS-004", "severity": "low",    "title": "JetBrains license key on disk", "description": "CLion license key file present. Low risk but worth securing.", "recommendation": "Ensure clion.key is not world-readable.", "evidence": "C:\\Users\\ideal\\AppData\\Roaming\\JetBrains\\CLion2025.2\\clion.key: 16888 bytes"},
+      {"id": "FS-005", "severity": "info",   "title": "Multiple Python venvs and project directories", "description": "Several .venv folders in project directories. Not a direct risk but increases the surface of Python packages to keep updated.", "recommendation": "Periodically run pip audit in active venvs.", "evidence": "Multiple .venv directories found under C:\\Users\\ideal\\project\\"}
+    ]},
+    "processes":  {"score": 62, "summary": "No overtly malicious processes detected. Notable concerns: PostgreSQL exposed, multiple VPN stacks, large ASUS service footprint, Docker daemon running.", "findings": [
+      {"id": "PRC-001", "severity": "high",   "title": "PostgreSQL process listening on all interfaces", "description": "postgres (PID 10112) actively serving on 0.0.0.0:5432. See NET-001.", "recommendation": "Restrict to localhost in postgresql.conf.", "evidence": "postgres process confirmed via Get-Process and netstat"},
+      {"id": "PRC-002", "severity": "medium", "title": "4 simultaneous OpenVPN Connect instances", "description": "Four OpenVPNConnect.exe processes running — may indicate multiple VPN sessions or orphaned processes.", "recommendation": "Verify all 4 sessions are intentional.", "evidence": "4x OpenVPNConnect.exe in process list"},
+      {"id": "PRC-003", "severity": "medium", "title": "7+ ASUS background services running", "description": "ArmouryCrate.Service, ArmouryCrateControlInterface, ROGLiveService, AuraWallpaperService, AacAmbientLighting, AsusSoftwareManager all active.", "recommendation": "Disable ASUS services not actively needed via services.msc.", "evidence": "Multiple ASUS processes in Get-Process output"},
+      {"id": "PRC-004", "severity": "medium", "title": "Docker daemon running continuously", "description": "com.docker.service running. Docker daemon exposes a management socket.", "recommendation": "Ensure Docker socket is not world-accessible. Disable if not used daily.", "evidence": "com.docker.service in process list"},
+      {"id": "PRC-005", "severity": "low",    "title": "AMD uProf component (cncmd) active", "description": "cncmd is an AMD Radeon / uProf process. See SW-001 for associated CVEs.", "recommendation": "Uninstall AMD uProf if not used for profiling.", "evidence": "cncmd running from AMD Radeon Software path"}
+    ]}
+  },
+  "executive": {
+    "overall_score": 54,
+    "grade": "D+",
+    "headline": "STONEAI is a gaming PC with solid antivirus and current patches but critically weakened by disabled kernel security features, a zero-length password policy, PostgreSQL exposed on all interfaces, and an unencrypted SSH private key on an unencrypted disk.",
+    "top_risks": [
+      "HVCI (Memory Integrity) disabled + AMD uProf kernel CVEs = any local process can achieve kernel-level persistence via a malicious driver without triggering Defender",
+      "PostgreSQL 18 bound to 0.0.0.0:5432 with a password policy that allows blank passwords = potential unauthenticated database access from LAN or VPN peers",
+      "Unencrypted SSH private key + no BitLocker = physical access or OS-level compromise gives full SSH identity theft with no passphrase barrier"
+    ],
+    "quick_wins": [
+      "net accounts /minpwlen:12 — eliminates blank password risk, takes 5 seconds",
+      "Uninstall WinPcap 4.1.3 — removes EOL kernel driver, Npcap already covers the same functionality",
+      "Set-NetFirewallProfile -Profile Public -DefaultInboundAction Block — explicit firewall hardening"
+    ],
+    "summary_paragraphs": [
+      "This is a high-performance gaming and development workstation running Windows 11 (build 26100) with a solid security baseline in some areas: Windows Defender is fully operational with current signatures, patches were applied as recently as May 12 2026, UAC is properly configured with secure desktop prompting, RDP is disabled, and SMB1 is off. These are genuinely good signs.",
+      "However, the machine carries several critical weaknesses that collectively make it vulnerable to any attacker who gains a foothold. The hardware security layer is nearly absent: Memory Integrity (HVCI) is off, ASLR and CFG are not enforced system-wide, and disk encryption is unconfirmed but likely absent. This is compounded by AMD uProf and ASUS Aura SDK — both installed and running — which have documented kernel-level CVEs. The password policy allowing zero-length passwords, PostgreSQL exposed on all network interfaces, and an unencrypted SSH private key on an unencrypted disk create a scenario where a single point of compromise cascades into full data loss."
+    ],
+    "priority_actions": [
+      {"action": "net accounts /minpwlen:12", "effort": "low", "impact": "high"},
+      {"action": "Enable Memory Integrity (HVCI) in Windows Security → Device Security", "effort": "low", "impact": "high"},
+      {"action": "Set listen_addresses = 'localhost' in postgresql.conf and restart PostgreSQL", "effort": "low", "impact": "high"},
+      {"action": "Uninstall WinPcap 4.1.3", "effort": "low", "impact": "medium"},
+      {"action": "ssh-keygen -p to add passphrase to id_ed25519", "effort": "low", "impact": "high"},
+      {"action": "Set-NetFirewallProfile -Profile Public -DefaultInboundAction Block", "effort": "low", "impact": "medium"},
+      {"action": "Enable BitLocker on C: and D:", "effort": "medium", "impact": "high"},
+      {"action": "Uninstall AMD uProf if not actively used for CPU profiling", "effort": "low", "impact": "medium"},
+      {"action": "Disable ASLR/CFG/DEP via Windows Security Exploit protection settings", "effort": "low", "impact": "high"},
+      {"action": "Remove one of the three VPN clients (pick one: SoftEther, OpenVPN, or Radmin VPN)", "effort": "medium", "impact": "low"}
+    ]
+  }
+}

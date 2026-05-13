@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HomeSecAI Security Report — 2026-05-12 23:30:53</title>
+  <style>
+    :root {
+      --critical: #dc2626; --high: #ea580c; --medium: #ca8a04;
+      --low: #16a34a; --info: #2563eb;
+      --bg: #0f172a; --surface: #1e293b; --border: #334155;
+      --text: #e2e8f0; --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 2rem; }
+    h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: #7dd3fc; }
+    h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted); }
+    .header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; }
+    .grade-circle {
+      width: 90px; height: 90px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; font-weight: 900; border: 4px solid;
+      flex-shrink: 0;
+    }
+    .grade-A { color: #22c55e; border-color: #22c55e; }
+    .grade-B { color: #84cc16; border-color: #84cc16; }
+    .grade-C { color: #eab308; border-color: #eab308; }
+    .grade-D { color: #f97316; border-color: #f97316; }
+    .grade-F { color: #ef4444; border-color: #ef4444; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .sev-critical { background: var(--critical); color: #fff; }
+    .sev-high     { background: var(--high);     color: #fff; }
+    .sev-medium   { background: var(--medium);   color: #fff; }
+    .sev-low      { background: var(--low);      color: #fff; }
+    .sev-info     { background: var(--info);     color: #fff; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th { background: #0f172a; padding: 0.625rem 0.75rem; text-align: left; color: var(--muted); font-weight: 600; }
+    td { padding: 0.625rem 0.75rem; border-top: 1px solid var(--border); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+    .scanner-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .scanner-card { background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .scanner-score { font-size: 1.75rem; font-weight: 800; }
+    .score-good  { color: #22c55e; }
+    .score-ok    { color: #eab308; }
+    .score-bad   { color: #ef4444; }
+    .sev-counts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1rem 0; }
+    .sev-pill { padding: 4px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: 0.35rem; }
+    .muted { color: var(--muted); font-size: 0.875rem; }
+    .generated { color: var(--muted); font-size: 0.8rem; margin-top: 0.25rem; }
+    @media print { body { background: white; color: black; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="grade-circle grade-C">C</div>
+    <div>
+      <h1>Security Report</h1>
+      <div style="font-size:1.1rem; color: #7dd3fc;">Score: 51/100</div>
+      <div class="generated">Generated: 2026-05-12 23:30:53</div>
+    </div>
+  </div>
+
+  <!-- Executive Summary -->
+  <div class="card">
+    <h2>Executive Summary</h2>
+    <p style="margin-bottom:1rem; line-height:1.6;">This gaming PC has solid antivirus and patch management but is critically exposed by disabled hardware security features (Secure Boot off, Memory Integrity off, ASLR and CFG disabled), multiple unpatched kernel-level ASUS vulnerabilities allowing local privilege escalation, no disk encryption on either drive, and a password policy that permits blank passwords.</p>
+    
+    <p style="margin-bottom:0.75rem; color: #cbd5e1; line-height:1.6;">Your computer has a solid foundation in several areas: Windows Defender is fully active with current signatures, automatic updates are working (security patches applied April 2026), SMBv1 is disabled, Remote Desktop is turned off, and UAC is on. These basics are genuinely good hygiene. However, the security audit found serious gaps that together would make it straightforward for malicious software — or a person with brief physical access — to gain complete, hidden control of your machine. The most important of these are in your hardware security settings: Secure Boot is off (meaning the PC cannot verify that Windows hasn't been tampered with before it loads), and Memory Integrity is disabled (meaning malicious drivers can inject code into the Windows kernel). Several pieces of ASUS software that run constantly in the background have publicly known vulnerabilities that allow escalation to full system administrator access.</p>
+    
+    <p style="margin-bottom:0.75rem; color: #cbd5e1; line-height:1.6;">The second cluster of high-priority issues involves your data protection and network exposure. Neither of your drives is encrypted with BitLocker, so anyone who boots your PC from a USB stick or removes the drive can read all your files immediately. An SSH private key and an OpenVPN configuration file are stored where they could be easily accessed if the system is compromised. Your password policy currently allows accounts with no password at all, and no security audit logging is configured, meaning if something did go wrong you would have no forensic trail to investigate. On the network side, PostgreSQL (your database) may be reachable from peers connected via your five active VPN clients, and the ASUS Armoury debug server is actively running and exposing an interface it should not. Addressing the hardware security settings and disk encryption first would have the largest immediate impact on your overall security posture.</p>
+    
+
+    <div class="sev-counts">
+      <div class="sev-pill sev-critical">2 Critical</div>
+      <div class="sev-pill sev-high">14 High</div>
+      <div class="sev-pill sev-medium">16 Medium</div>
+      <div class="sev-pill sev-low">9 Low</div>
+      <div class="sev-pill sev-info">4 Info</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3>Top Risks</h3>
+        <ul><li>Secure Boot is off and Memory Integrity (HVCI) is disabled — a single malicious driver such as those exploitable via the HIGH-severity AMD uProf CVEs can achieve persistent kernel-level control that survives reboots and cannot be detected by Windows Defender</li><li>AMD uProf and ASUS Armoury Crate/Aura SDK have multiple actively exploited HIGH-severity CVEs including a KASLR bypass and unquoted service path privilege escalation that any program running on the machine can exploit to reach SYSTEM or kernel access</li><li>No BitLocker encryption on any drive means physical access, a boot from USB, or OS-level compromise provides unrestricted access to all data including SSH private keys, the OpenVPN config, PostgreSQL database contents, and source code</li></ul>
+      </div>
+      <div>
+        <h3>Quick Wins</h3>
+        <ul><li>Set minimum password length to 12 immediately (currently zero — any account can have a blank password): net accounts /minpwlen:12</li><li>Go to Windows Security > App & Browser Control > Exploit protection settings and enable ASLR (Force Randomization), CFG, and DEP (for All Programs) — these are toggle switches that take effect immediately</li><li>Uninstall WinPcap 4.1.3 (end-of-life, has unpatched CVEs) — Npcap 1.83 is already installed and provides the same functionality</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Priority Actions -->
+  <div class="card">
+    <h2>Priority Actions</h2>
+    <table>
+      <thead><tr><th>Action</th><th>Effort</th><th>Impact</th></tr></thead>
+      <tbody>
+        
+        <tr>
+          <td>Enable Secure Boot in the ASUS BIOS (GA605WV.315) — press F2/DEL at boot, go to Security > Secure Boot and enable it</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Re-enable Memory Integrity: Windows Security > Device Security > Core Isolation > Memory Integrity toggle On; if blocked by a driver, identify and update/remove that driver</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Enable full-disk BitLocker encryption on both C: and D: drives via 'Manage BitLocker' in the Start menu</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Update or uninstall AMD uProf (CVE-2023-20562, CVE-2025-48510 — HIGH severity kernel exploit and KASLR bypass); update Armoury Crate Service and ASUS Aura SDK to address CVE-2023-26911 and CVE-2022-35899</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Enable ASLR, CFG, and DEP (All Programs) in Windows Security > App & Browser Control > Exploit Protection Settings > System Settings</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Fix password policy: net accounts /minpwlen:12 /uniquepw:10 — minimum length is currently zero which allows blank passwords</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-medium">medium</span></td>
+        </tr>
+        
+        <tr>
+          <td>Configure Windows audit policy for logon, process creation, and privilege use: auditpol /set /subcategory:"Logon" /success:enable /failure:enable (and repeat for Process Creation, Privilege Use)</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-medium">medium</span></td>
+        </tr>
+        
+        <tr>
+          <td>Restrict PostgreSQL to localhost only (listen_addresses = 'localhost' in postgresql.conf) and add Windows Firewall rules blocking ports 139/445/5432 from all VPN adapter subnets</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td><span class="badge sev-high">high</span></td>
+        </tr>
+        
+        <tr>
+          <td>Investigate and remove the 'Temp' Chrome extension directory; audit all four Chrome and four Edge extension IDs against known-good lists</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-medium">medium</span></td>
+        </tr>
+        
+        <tr>
+          <td>Uninstall WinPcap 4.1.3 (end-of-life) and disable AutoRun for all drive types by setting HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\NoDriveTypeAutoRun=0xFF</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td><span class="badge sev-low">low</span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Scanner Scores -->
+  <div class="card">
+    <h2>Module Scores</h2>
+    <div class="scanner-grid">
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-ok">55</div>
+        <div style="font-weight:600; text-transform: capitalize;">network</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">6 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">13.2s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-ok">68</div>
+        <div style="font-weight:600; text-transform: capitalize;">system</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">4 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">8.0s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-bad">42</div>
+        <div style="font-weight:600; text-transform: capitalize;">software</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">8 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">217.3s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-bad">48</div>
+        <div style="font-weight:600; text-transform: capitalize;">users</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">5 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">1.5s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-ok">62</div>
+        <div style="font-weight:600; text-transform: capitalize;">processes</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">5 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">2.6s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-bad">48</div>
+        <div style="font-weight:600; text-transform: capitalize;">filesystem</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">5 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">28.9s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-ok">58</div>
+        <div style="font-weight:600; text-transform: capitalize;">startup</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">5 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">3.6s</div>
+      </div>
+      
+      <div class="scanner-card">
+        <div class="scanner-score score-bad">30</div>
+        <div style="font-weight:600; text-transform: capitalize;">hardware</div>
+        <div class="muted" style="font-size:0.75rem; margin-top:0.25rem;">7 finding(s)</div>
+        <div class="muted" style="font-size:0.75rem;">2.3s</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- All Findings -->
+  <div class="card">
+    <h2>All Findings</h2>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Sev</th><th>Module</th><th>Title</th><th>Description</th><th>Recommendation</th></tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-001</td>
+          <td><span class="badge sev-critical">critical</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">Minimum password length is zero — blank passwords permitted</td>
+          <td class="muted">The local account password policy enforces no minimum password length. Any account on this system — including future accounts — can be created with an empty password, eliminating the most basic authentication requirement.</td>
+          <td style="color:#86efac;">Set minimum password length immediately: net accounts /minpwlen:12 (or higher). Also enable complexity requirements via Local Security Policy > Account Policies > Password Policy > Password must meet complexity requirements: Enabled.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-001</td>
+          <td><span class="badge sev-critical">critical</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">Secure Boot not enabled — boot chain unverified</td>
+          <td class="muted">Secure Boot is reported as both not enabled and not supported on this system. Without it, the UEFI boot chain cannot be cryptographically verified, allowing bootkit malware to persist below the OS level, survive OS reinstallation, and go undetected by Windows Defender.</td>
+          <td style="color:#86efac;">Enter the ASUS BIOS (GA605WV.315) on next reboot (press F2 or DEL), navigate to Security > Secure Boot and enable it. This may require the disk to be GPT-formatted. If the system reports Secure Boot as unsupported, verify BIOS settings and whether the platform truly lacks the capability or has it disabled in firmware.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">SMB/NetBIOS ports open (135, 139, 445) on all adapters</td>
+          <td class="muted">Ports 135 (RPC), 139 (NetBIOS-SSN), and 445 (SMB) are listening and bound to the System process on all network adapters. SMB is the primary ransomware propagation and lateral-movement vector; these ports are reachable by Radmin VPN peers and potentially other VPN-connected hosts.</td>
+          <td style="color:#86efac;">Apply Windows Firewall rules scoped to trusted local subnets only. If file sharing is not needed, disable the 'Server' service. Explicitly block these ports on VPN adapter interfaces (Radmin VPN, hpc, OpenVPN).</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-002</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">Default Windows administrative shares exposed (ADMIN$, C$, D$)</td>
+          <td class="muted">ADMIN$, C$, and D$ hidden administrative shares are active. An attacker with any valid local admin credentials can browse the entire file system remotely over SMB, enabling data exfiltration or ransomware deployment.</td>
+          <td style="color:#86efac;">Disable administrative shares by setting HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters\AutoShareWks=DWORD:0 and restarting the Server service. Only re-enable if remote administration is genuinely required.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-003</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">PostgreSQL database (port 5432) potentially reachable from VPN peers</td>
+          <td class="muted">PostgreSQL 18 listens on port 5432. If not restricted to 127.0.0.1 in postgresql.conf, it is reachable from any of the five active VPN adapters and potentially the local network, risking unauthorized database access or data exfiltration.</td>
+          <td style="color:#86efac;">Edit C:\Program Files\PostgreSQL\18\data\postgresql.conf: set listen_addresses = 'localhost'. Restrict pg_hba.conf to local connections. Confirm with netstat -ano that 5432 binds only to 127.0.0.1.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SYS-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">system</td>
+          <td style="font-weight:600;">No audit policy configured — zero security event logging</td>
+          <td class="muted">The audit_policy field returned an empty string, meaning no Windows Security audit policy has been configured. Without it there is no log trail for logon attempts, privilege escalation, process creation, or object access — making intrusion detection and forensics impossible.</td>
+          <td style="color:#86efac;">Configure a baseline audit policy immediately: auditpol /set /subcategory:"Logon" /success:enable /failure:enable and repeat for Account Management, Process Creation, Privilege Use, Policy Change, and System. Alternatively, apply the Microsoft Security Baseline GPO.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">CVE-2025-48510: AMD uProf KASLR bypass — HIGH severity</td>
+          <td class="muted">AMD uProf 5.2.431 contains an improper return value flaw allowing a local attacker to bypass Kernel ASLR, reducing the difficulty of kernel exploitation. Combined with SW-002, this provides a near-complete local privilege escalation chain.</td>
+          <td style="color:#86efac;">Update AMD uProf to the patched version from AMD's security advisory page. If uProf is not actively needed for CPU profiling, uninstall it entirely.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-002</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">CVE-2023-20562: AMD uProf allows unsigned kernel driver loading — HIGH severity</td>
+          <td class="muted">Insufficient IOCTL input validation in AMD uProf allows an authenticated local user to load an unsigned driver, potentially achieving arbitrary kernel-level code execution with SYSTEM privileges.</td>
+          <td style="color:#86efac;">Update AMD uProf immediately. Until patched, monitor for unexpected driver loads via Windows Event ID 6 (code integrity) or Sysmon Event ID 6.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-003</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">CVE-2023-26911: Armoury Crate unquoted service path — local SYSTEM escalation</td>
+          <td class="muted">ASUS SetupAsusServices in Armoury Crate contains an unquoted service path, allowing a local user to plant a malicious executable in the expected path and have it execute as SYSTEM when the service restarts.</td>
+          <td style="color:#86efac;">Update Armoury Crate Service to the latest release. Verify fix by running: wmic service get name,pathname | findstr /i /v "\"" to list remaining unquoted paths.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-004</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">CVE-2022-35899: ASUS Aura SDK unquoted service path — local SYSTEM escalation</td>
+          <td class="muted">The ASUSTeK Aura Ready Game SDK service (GameSDK.exe) has an unquoted executable path; a local user can achieve SYSTEM privilege escalation by planting a malicious binary at the unquoted path segment.</td>
+          <td style="color:#86efac;">Update ASUS Aura SDK to the latest version. Verify the GameSDK service binary path is properly quoted in the service registry entry.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">ArmouryCrate.exe running unsigned — integrity check failure</td>
+          <td class="muted">The main ArmouryCrate.exe is flagged NotSigned. A system utility from a major OEM should always be digitally signed; an unsigned binary could indicate tampering, a modified installer, or a sideloaded malicious replacement. This also bypasses code integrity enforcement.</td>
+          <td style="color:#86efac;">Verify the file SHA256 hash against ASUS's official release hashes. If tampered, reinstall Armoury Crate from the official ASUS support page. Check Windows Event Log (Microsoft-Windows-CodeIntegrity/Operational) for related code integrity events.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-001</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">No BitLocker disk encryption detected on any drive</td>
+          <td class="muted">The BitLocker status scan returned an empty array for all drives. Without encryption, a stolen machine, a boot-from-USB attack, or physical drive removal provides complete access to all files including SSH keys, VPN credentials, database contents, and source code.</td>
+          <td style="color:#86efac;">Enable BitLocker on all drives: open 'Manage BitLocker' from the Start menu. Enable Secure Boot first (HW-001) for the TPM-protected configuration. Store the 48-digit recovery key in your Microsoft account or a separate secure location.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-002</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">SSH private key stored on unencrypted drive without confirmed passphrase</td>
+          <td class="muted">An ED25519 SSH private key (id_ed25519, 399 bytes) is at C:\Users\ideal\.ssh\id_ed25519 on an unencrypted drive. If the drive is accessed or the machine is compromised, the key can be copied and used to access all servers it authenticates to.</td>
+          <td style="color:#86efac;">Add a strong passphrase to the key: ssh-keygen -p -f C:\Users\ideal\.ssh\id_ed25519. Enable BitLocker (FS-001). Restrict .ssh directory permissions via icacls to the owner only: icacls C:\Users\ideal\.ssh /inheritance:r /grant ideal:F</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-002</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">Memory Integrity (HVCI) disabled — kernel code integrity not enforced</td>
+          <td class="muted">Hypervisor-Protected Code Integrity is disabled. WasEnabledBy=2 indicates it was previously enabled and a driver (likely an incompatible third-party driver) caused Windows to disable it. Without HVCI, unsigned or malicious kernel code can be injected, enabling rootkits and driver exploits including those in AMD uProf (SW-001/SW-002).</td>
+          <td style="color:#86efac;">Re-enable Memory Integrity: Windows Security > Device Security > Core Isolation > Memory Integrity: On. If Windows blocks re-enabling due to an incompatible driver, the notification will identify it. Update or uninstall that driver, then re-enable HVCI.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-003</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">ASLR reported disabled at system level</td>
+          <td class="muted">ASLR_Enabled is 0, indicating Address Space Layout Randomization may be disabled or not enforced system-wide. ASLR is a foundational exploit mitigation that randomizes memory layout; disabling it makes all memory corruption vulnerabilities significantly easier to exploit reliably.</td>
+          <td style="color:#86efac;">Enable mandatory ASLR in Windows Security > App & browser control > Exploit protection settings > System settings > Force randomization for images (Mandatory ASLR): On. Verify: Get-ProcessMitigation -System | Select-Object -ExpandProperty ASLR.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-004</td>
+          <td><span class="badge sev-high">high</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">Control Flow Guard (CFG) disabled system-wide</td>
+          <td class="muted">CFG_Enabled is 0 system-wide. Control Flow Guard prevents attackers from redirecting program execution to arbitrary code locations — a core technique in modern exploits. Its absence significantly weakens defense-in-depth across all applications.</td>
+          <td style="color:#86efac;">Enable CFG: Windows Security > App & browser control > Exploit protection settings > System settings > Control flow guard (CFG): On. Alternatively from PowerShell: Set-ProcessMitigation -System -Enable CFG.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-004</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">Five simultaneous VPN clients create unauditable network topology</td>
+          <td class="muted">SoftEther VPN, OpenVPN Connect, Radmin VPN, WireGuard, and Ivanti Pulse Secure are all active simultaneously with separate adapters and subnets. This makes it extremely difficult to determine which services are reachable from which external peers and to apply consistent firewall rules.</td>
+          <td style="color:#86efac;">Terminate and disable auto-start for VPN clients not actively in use. For each active VPN, create explicit Windows Firewall rules blocking SMB (135/139/445) and PostgreSQL (5432) on that VPN adapter's interface.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-005</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">Armoury Crate HTML debug server running on port 9014</td>
+          <td class="muted">ArmouryHtmlDebugServer (PID 39136) is listening on port 9014. Debug HTTP servers are development tools that expose internal APIs and should never run on a production system; they may allow unauthenticated access to device control interfaces.</td>
+          <td style="color:#86efac;">Update Armoury Crate to the latest release. If the debug server persists after update, block port 9014 via Windows Firewall (inbound) and investigate whether a non-standard Armoury Crate build is installed.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SYS-002</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">system</td>
+          <td style="font-weight:600;">AutoRun not explicitly disabled — USB malware vector</td>
+          <td class="muted">NoDriveTypeAutoRun is null (not set) and AutoRunDisabled is false, meaning AutoRun is not universally blocked. A malicious USB drive or optical disc could auto-execute code when inserted.</td>
+          <td style="color:#86efac;">Set HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\NoDriveTypeAutoRun = DWORD:0xFF (255) to disable AutoRun for all drive types, or configure via Group Policy: Computer Configuration > Administrative Templates > Windows Components > AutoPlay Policies > Turn off AutoPlay.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-005</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">CVE-2025-48502 / CVE-2025-29933: AMD uProf MSR overwrite and OOB write — MEDIUM</td>
+          <td class="muted">Two additional AMD uProf vulnerabilities allow a local attacker to overwrite MSR registers (potential denial-of-service or system instability) and write out-of-bounds (crash or further exploitation).</td>
+          <td style="color:#86efac;">Update AMD uProf. These vulnerabilities compound the risk of SW-001 and SW-002 and reinforce the need for immediate remediation.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-006</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">WinPcap 4.1.3 installed — end-of-life with known vulnerabilities</td>
+          <td class="muted">WinPcap 4.1.3 (published 2013, end-of-life) is installed alongside the modern Npcap 1.83. WinPcap has multiple unpatched CVEs; its kernel driver runs at elevated privilege and represents unnecessary risk given Npcap is already present.</td>
+          <td style="color:#86efac;">Uninstall WinPcap 4.1.3 via Programs and Features. Npcap already provides all packet capture functionality; no applications should require WinPcap if Npcap is installed in WinPcap compatibility mode.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-007</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">CVE-2022-38699: Armoury Crate log symlink attack</td>
+          <td class="muted">The Armoury Crate logging function does not validate whether the log file is a symbolic link, allowing a local attacker to redirect log writes to overwrite arbitrary system files.</td>
+          <td style="color:#86efac;">Update Armoury Crate. This vulnerability requires local access but is exploitable without admin rights by a standard user account.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-002</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">No password history enforced — immediate password reuse allowed</td>
+          <td class="muted">Password history length is 'None', meaning users can change their password and immediately set it back to the previous one, rendering password rotation policies ineffective.</td>
+          <td style="color:#86efac;">Enforce password history of at least 10 remembered passwords: net accounts /uniquepw:10. Combined with USR-001 fix this establishes a meaningful rotation policy.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-003</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">postgres service account enabled with interactive access potential</td>
+          <td class="muted">The 'postgres' local account is enabled, has a password (set February 2026), and logged in at scan time. Service accounts should not have interactive logon rights; if compromised via a PostgreSQL vulnerability, an attacker gains an authenticated OS-level session.</td>
+          <td style="color:#86efac;">In Local Security Policy, add 'postgres' to 'Deny log on locally' and 'Deny log on through Remote Desktop Services'. Consider converting to a Windows Managed Service Account (MSA) for automatic password management.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-004</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">No logon events captured — authentication monitoring gap</td>
+          <td class="muted">logon_events is empty, indicating either no logon audit policy or inability to retrieve Security Event Log entries. Without logon auditing, failed password attempts, account lockouts, and unauthorized access attempts leave no trace.</td>
+          <td style="color:#86efac;">Enable logon auditing: auditpol /set /subcategory:"Logon" /success:enable /failure:enable and auditpol /set /subcategory:"Account Lockout" /success:enable /failure:enable. Verify events 4624 (success) and 4625 (failure) appear in the Security log.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-002</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">Armoury Crate HTML debug server actively running on port 9014</td>
+          <td class="muted">ArmouryHtmlDebugServer (PID 39136) is an active process listening on port 9014. This is a development/debug HTTP server that should not be running on a production machine; it may expose internal device control APIs to anyone who can reach that port.</td>
+          <td style="color:#86efac;">Update Armoury Crate to the latest version; normal installations should not run this process. If it persists post-update, create a Windows Firewall rule blocking inbound connections to port 9014 and investigate the Armoury Crate installation integrity.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-003</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">Discord process (PID 30680) consuming anomalous resources — 5465 CPU units, 769 MB RAM</td>
+          <td class="muted">One Discord renderer process (PID 30680) has accumulated 5,465 CPU time units and 769 MB of working set. While Discord uses Chromium and can be heavy, this level is abnormal and warrants investigation for cryptomining injection, a renderer exploit, or a hung process consuming resources.</td>
+          <td style="color:#86efac;">Restart Discord to clear the process. Monitor resource usage post-restart. If elevated consumption recurs in a single PID, check for Discord exploits in the wild and consider running an antimalware scan targeting the Discord process tree.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-003</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">OpenVPN configuration file in Downloads folder</td>
+          <td class="muted">An OpenVPN config file (code.ovpn, 2042 bytes) is stored in the user's Downloads directory. VPN config files can contain server addresses, pre-shared keys, or embedded private key/certificate material that would grant network access if stolen.</td>
+          <td style="color:#86efac;">Open code.ovpn in a text editor and check for embedded private keys or passwords. Import the profile into OpenVPN Connect via the application and delete the file from Downloads. Move any future VPN configs to an encrypted location.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STR-001</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">'Temp' directory entry among Chrome browser extensions — suspicious</td>
+          <td class="muted">A directory named 'Temp' appears alongside legitimate extension IDs in the Chrome extensions listing. Legitimate Chrome extensions are identified by 32-character alphanumeric IDs; a 'Temp' folder is atypical and could indicate a malicious or improperly installed extension hiding its identity.</td>
+          <td style="color:#86efac;">Open Chrome > More tools > Extensions > Enable Developer Mode > inspect all extensions by name and ID. Navigate to C:\Users\ideal\AppData\Local\Google\Chrome\User Data\Default\Extensions\ and examine the 'Temp' directory contents. Remove any unrecognized extension.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STR-002</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">NoxMultiPlayer auto-starts from non-system D: drive</td>
+          <td class="muted">A HKCU Run key launches D:\Program Files\Nox\bin\MultiPlayerManager.exe at login. Software auto-starting from a non-system drive is unusual and bypasses some integrity checks. Nox Player is an Android emulator with kernel-level access; auto-starting it expands the attack surface continuously.</td>
+          <td style="color:#86efac;">If Nox is not actively used, delete the startup entry: reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v NoxMultiPlayer /f and uninstall Nox Player. If used, start it manually only when needed.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-005</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">DEP set to Opt-In mode — many processes unprotected</td>
+          <td class="muted">DEP_Policy=2 (Opt-In) applies Data Execution Prevention only to Windows system processes and applications that explicitly opt in. Third-party applications that have not opted in are unprotected against stack/heap injection attacks.</td>
+          <td style="color:#86efac;">Enable DEP for all programs: from elevated CMD run 'bcdedit /set nx AlwaysOn' and reboot, or configure via Windows Security > App & browser control > Exploit protection > System settings > Data Execution Prevention (DEP): On.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-006</td>
+          <td><span class="badge sev-medium">medium</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">VBS enabled but Credential Guard status unknown and HVCI off</td>
+          <td class="muted">Virtualization Based Security (VBS) is active (VBSEnabled=1), providing the infrastructure for security isolation, but HVCI is disabled and Credential Guard could not be assessed. VBS provides little benefit without HVCI and Credential Guard enabled.</td>
+          <td style="color:#86efac;">After resolving HW-002 (re-enable HVCI), investigate enabling Credential Guard: Windows Security > Device Security > Core Isolation. This isolates NTLM/Kerberos credentials from OS-level compromise, protecting against lsass credential dumping.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">NET-006</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">network</td>
+          <td style="font-weight:600;">lsass.exe bound on dynamic RPC port 49664</td>
+          <td class="muted">The Windows authentication process lsass.exe appears bound to port 49664, consistent with dynamic RPC endpoint mapping. While normal, any exposure of this port externally could facilitate DCE/RPC attacks against the authentication subsystem.</td>
+          <td style="color:#86efac;">Ensure Windows Firewall blocks the ephemeral port range (49152-65535) from untrusted interfaces. Restrict RPC endpoint mapper (port 135) to trusted subnets.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SYS-003</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">system</td>
+          <td style="font-weight:600;">UAC admin prompt does not require credential re-entry</td>
+          <td class="muted">ConsentPromptBehaviorAdmin = 5 means UAC shows a consent dialog (click-through) rather than requiring password entry. An attacker with code execution in the admin's session can auto-click UAC prompts without knowing a password.</td>
+          <td style="color:#86efac;">Raise ConsentPromptBehaviorAdmin to 1 (Prompt for credentials on secure desktop) via HKLM\SOFTWARE\Microsoft\Windows\System\ConsentPromptBehaviorAdmin or Group Policy > Computer Config > Security Settings > Local Policies > Security Options.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SW-008</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">software</td>
+          <td style="font-weight:600;">Cheat Engine installed — kernel-level memory manipulation tool</td>
+          <td class="muted">Cheat Engine 7.6 is installed. Beyond game cheating, it provides powerful memory scanning and injection capabilities and includes a kernel driver (dbk64.sys) that can bypass many security controls. Its presence on a system with sensitive data (SSH keys, database) is a risk.</td>
+          <td style="color:#86efac;">Uninstall Cheat Engine if not actively required. Its kernel driver remains loaded after the GUI closes; reboot after uninstallation to ensure the driver is unloaded.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">USR-005</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">users</td>
+          <td style="font-weight:600;">Dormant 'ediso' account with password set should be removed</td>
+          <td class="muted">A local account 'ediso' exists with a password set in June 2025 but is currently disabled. Dormant accounts with set passwords increase the account attack surface and could be re-enabled by malware or a local attacker.</td>
+          <td style="color:#86efac;">If the 'ediso' account is no longer needed, delete it: net user ediso /delete. If occasionally needed, keep it disabled and document the legitimate use case.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-004</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">ArmouryCrate.UserSessionHelper consuming excessive CPU (103 units)</td>
+          <td class="muted">ArmouryCrate.UserSessionHelper (PID 23704) is consuming 103 CPU units, which is unusually high for a helper process. Combined with the unsigned ArmouryCrate.exe finding, this warrants closer inspection of the Armoury Crate installation.</td>
+          <td style="color:#86efac;">Reinstall Armoury Crate from official sources and monitor CPU usage afterward. If elevated CPU persists, disable non-essential ASUS background services via Task Manager > Services.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-004</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">118 items in Recycle Bin — recoverable sensitive data</td>
+          <td class="muted">The Recycle Bin contains 118 items. Files remain fully recoverable until the bin is emptied and the space overwritten. These could include credentials, private documents, or configuration files previously deleted.</td>
+          <td style="color:#86efac;">Review and empty the Recycle Bin. For files containing credentials or keys, use a secure deletion tool (e.g., SDelete from Sysinternals) to prevent forensic recovery.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">FS-005</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">filesystem</td>
+          <td style="font-weight:600;">Java auto-update executable persisting in Temp folder</td>
+          <td class="muted">jre-8u491-windows-au.exe (2.4 MB) is present in the user Temp folder. While likely a legitimate Java Auto Updater, persistent executables in Temp are a common malware staging pattern and should not be retained after execution.</td>
+          <td style="color:#86efac;">Verify the file is genuine by checking its digital signature (right-click > Properties > Digital Signatures). If Java is up to date, delete the file. Review Temp folder contents periodically.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STR-003</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">Riot Vanguard kernel-mode driver auto-loading at every boot</td>
+          <td class="muted">Riot Vanguard (vgtray.exe) is in HKLM Run and loads its kernel driver (vgk.sys) before Windows fully initializes. A vulnerability in this ring-0 driver directly compromises the kernel. The driver runs even when Riot games are not being played.</td>
+          <td style="color:#86efac;">Keep Riot Games software and Vanguard updated at all times. If Valorant and League of Legends are not actively played, uninstall Vanguard via Apps & Features to remove the kernel driver entirely.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STR-004</td>
+          <td><span class="badge sev-low">low</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">Excessive startup items (17 entries) increase persistent attack surface</td>
+          <td class="muted">Seventeen registry Run key entries launch at every login: Steam, Discord, Epic Games, Docker Desktop, Opera GX, OpenVPN, BlueStacks Services, Riot Client, OneDrive, Microsoft Edge, and others. Each represents a continuously exposed network service and potential exploitation surface.</td>
+          <td style="color:#86efac;">Open Task Manager > Startup Apps and disable all non-essential auto-starts. Steam, Epic Games, Opera GX, BlueStacks, NoxMultiPlayer, and Riot Client can all be started on-demand. Reduce the startup set to security software and essential cloud sync.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">SYS-004</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">system</td>
+          <td style="font-weight:600;">Windows Defender fully enabled with current signatures</td>
+          <td class="muted">All Defender components are active: real-time protection, behavior monitoring, IOAV, on-access protection, antispyware, and Network Inspection System. Signatures were updated at scan time. This is a strong baseline.</td>
+          <td style="color:#86efac;">No action needed. Maintain automatic signature updates and consider enabling Defender Application Guard for browser isolation.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">PRC-005</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">processes</td>
+          <td style="font-weight:600;">lsass.exe flagged by scanner keyword heuristic — likely false positive but warrants monitoring</td>
+          <td class="muted">lsass (PID 2024) was flagged by the scanner's keyword match. lsass.exe is the legitimate Windows Local Security Authority process. However, it is the primary target for credential dumping attacks (Mimikatz); monitoring for unexpected access is appropriate.</td>
+          <td style="color:#86efac;">Enable Credential Guard (requires HVCI — see hardware scanner findings) to protect lsass memory. Deploy Sysmon with Event ID 10 rules to alert on any process opening a handle to lsass.exe with PROCESS_VM_READ access.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">STR-005</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">startup</td>
+          <td style="font-weight:600;">WMI subscription present — verify it is not a persistence mechanism</td>
+          <td class="muted">A WMI event subscription named 'SCM Event Log Filter' is registered. WMI subscriptions survive reboots and are a known malware persistence mechanism; this particular subscription monitors Service Control Manager events and appears to be a legitimate Windows component, but it should be verified.</td>
+          <td style="color:#86efac;">Verify legitimacy: Get-WMIObject -Namespace root\subscription -Class __EventFilter | Select-Object Name, Query, EventNamespace. Compare the query and associated consumer against known-good Windows baselines. If any WMI subscription has unexpected consumers or executes code, investigate immediately.</td>
+        </tr>
+        
+        <tr>
+          <td style="white-space:nowrap; font-family:monospace; font-size:0.75rem;">HW-007</td>
+          <td><span class="badge sev-info">info</span></td>
+          <td style="text-transform:capitalize; white-space:nowrap;">hardware</td>
+          <td style="font-weight:600;">TPM status could not be assessed</td>
+          <td class="muted">All TPM fields returned null, meaning the scanner could not read TPM state. BitLocker with TPM and Secure Boot provides the strongest at-rest protection; without confirming TPM availability this cannot be configured optimally.</td>
+          <td style="color:#86efac;">Check TPM status manually: tpm.msc (TPM Management console) or Get-Tpm in PowerShell. If a TPM 2.0 chip is present, enable it in BIOS. It is required for full BitLocker + Secure Boot + Credential Guard integration.</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <div style="text-align:center; margin-top:2rem; color: var(--muted); font-size:0.8rem;">
+    HomeSecAI — Powered by Claude AI · 2026-05-12 23:30:53
+  </div>
+</body>
+</html>
