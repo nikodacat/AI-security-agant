@@ -20,11 +20,11 @@
 但沒有解決AI就可以自己完成的問題<br>
 
 
-## 1.開始鑽研小細節或預定下一個目標
+## 2.開始鑽研小細節或預定下一個目標
 整體的檢測都能完成，剩下的就是優化使用體驗以及客製化，都是比較偏產品化的進步，除非想到有哪些需要額外完成的部分。<br>
 但因為純靠AI目前這套軟體已經完成了幾乎全部的工作，因此後面的過程也只是單純的給prompt讓他執行、改呈現方式而已，並不能做到任何創新的方法。<br>
 
-## 2.換專題
+## 3.換專題
 目前主意是音樂遊戲譜面的產生器，這個在過去有相關專題，但採用的是diffusion，針對的是4k(下落式音遊):<br>
 <img width="600"  alt="image" src="https://github.com/user-attachments/assets/a7c31d5c-8cd4-4981-83b4-61642363a788" />
 <img width="600" alt="image" src="https://github.com/user-attachments/assets/6728f97c-a268-4119-aaaf-d809ee0b0ed3" />
